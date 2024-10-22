@@ -15,39 +15,35 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TCreateProduct } from "@/lib/types";
-import { createProductSchema } from "@/lib/schemas/product";
+import { TUpdateProduct } from "@/lib/types";
+import { updateProductSchema } from "@/lib/schemas/product";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { z } from "zod";
 
-const ProductCreateForm = () => {
+const ProductEditForm = ({productId, product} : {
+    productId: string,
+    product: TUpdateProduct
+}) => {
 	// 1. Define your form.
-	const form = useForm<TCreateProduct>({
-		resolver: zodResolver(createProductSchema),
+	const form = useForm<TUpdateProduct>({
+		resolver: zodResolver(updateProductSchema),
 		defaultValues: {
-			name: "test-name",
-			description: "test-description",
-			price: 10.99,
-			code: "test-code",
-			ProductVariantColor: [
-				{
-					color: "red",
-				},
-			],
+			...product,
+			price: Number(product.price)
 		},
 	});
 
 	// 2. Define a submit handler.
-	async function onSubmit(values: TCreateProduct) {
+	async function onSubmit(values: TUpdateProduct) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
 		try {
-			await axios.post('/api/admin/inventory', values)
-			console.log('Success Created');
+			await axios.put(`/api/admin/inventory/${productId}`, values)
+			console.log('Success Updated');
 			form.reset();
 		} catch (error) {
 			if (error instanceof z.ZodError) {
-				console.log("[ADMIN_INVENTORY_POST]: " + error);
+				console.log("[ADMIN_INVENTORY_PUT]: " + error);
 			}
 			console.log("FAILD TO CREATE_AXIOS")
 		}
@@ -197,11 +193,11 @@ const ProductCreateForm = () => {
 					<Button type="button" variant={"secondary"}>
 						Cancel
 					</Button>
-					<Button type="submit">Create product</Button>
+					<Button type="submit">Update product</Button>
 				</div>
 			</form>
 		</Form>
 	);
 };
 
-export default ProductCreateForm;
+export default ProductEditForm;
