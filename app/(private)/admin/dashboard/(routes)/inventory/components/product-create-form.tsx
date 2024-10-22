@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import axios from 'axios';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -36,10 +37,19 @@ const ProductCreateForm = () => {
 	});
 
 	// 2. Define a submit handler.
-	function onSubmit(values: TCreateProduct) {
+	async function onSubmit(values: TCreateProduct) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
-		console.log(values);
+		try {
+			await axios.post('/api/admin/inventory', values)
+			console.log('Success Created');
+			form.reset();
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				console.log("[ADMIN_INVENTORY_POST]: " + error);
+			}
+			console.log("FAILD TO CREATE_AXIOS")
+		}
 	}
 
     function onError(error: any) {
