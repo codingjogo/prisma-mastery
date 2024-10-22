@@ -1,0 +1,1 @@
+Next.js@14.2 + TypeScript^5 + React^18 + React Hook Form^7.53.1 + zod ^3.23.8 + ESLINT ^8 + Tailwind CSS^3.4.1
