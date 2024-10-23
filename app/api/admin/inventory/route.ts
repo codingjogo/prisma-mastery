@@ -1,12 +1,12 @@
 import prisma from "@/lib/db";
-import { createProductSchema } from "@/lib/schemas/product";
+import { productCreateSchema } from "@/lib/schemas/product";
 import { z } from "zod";
 
 export async function POST(request: Request) {
 	try {
 		const json = await request.json();
 
-		const validatedData = createProductSchema.parse(json);
+		const validatedData = productCreateSchema.parse(json);
 
 		const newProduct = await prisma.product.create({
 			data: {
@@ -15,9 +15,10 @@ export async function POST(request: Request) {
 				code: validatedData.code,
 				description: validatedData.description,
 				ProductVariantColor: {
-					create: validatedData.ProductVariantColor.map(
+					create: validatedData.ProductVariantColor?.map(
 						(v_color) => ({
 							color: v_color.color || "",
+							images: v_color.images || [],
 						})
 					),
 				},

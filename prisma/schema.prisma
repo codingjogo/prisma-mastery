@@ -27,5 +27,6 @@ model ProductVariantColor {
   updated_at DateTime? @db.Timestamptz(6)
   color      String
   product_id String?   @db.Uuid
+  images     String[]  @default([])
   Product    Product?  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 }
